@@ -22,14 +22,15 @@ class App extends Component {
 
   onChangeHandler(e) {
     const keywords = e.target.value.trim()
+    clearTimeout(this.searchDelay)
     if (keywords === '') {
       this.loadHotGames()
-    } else {
-      this.setState({results: []})
-      clearTimeout(this.searchDelay)
+    } else if (keywords.length >= 2) {
+      this.setState(() => ({results: []}))
       this.searchDelay = setTimeout(() => {
         search(keywords, (results) => {
-          this.setState({results: results})
+          console.log('results:', results.length)
+          this.setState(() => ({results: results}))
         })
       }, 500)
     }

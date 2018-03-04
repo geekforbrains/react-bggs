@@ -6,12 +6,27 @@
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>BGGS</title>
+    <style>
+    .container {max-width:500px;margin:0px auto;}
+    </style>
   </head>
   <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <div id="root"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <h1>BGGS</h1>
+          <p class="text-secondary">
+            <a href="http://boardgamegeek.com" target="_blank">Board Game Geek</a> Search
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div id="root"></div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

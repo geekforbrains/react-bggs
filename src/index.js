@@ -7,7 +7,7 @@ import Results from './components/results'
 
 ReactDOM.render(
   <App>
-    <Form />  
+    <Form />
     <Results />
   </App>,
 document.getElementById('root'));
