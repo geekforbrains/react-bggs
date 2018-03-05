@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 import App from './components/app'
 import Form from './components/form'
@@ -10,4 +10,4 @@ ReactDOM.render(
     <Form />
     <Results />
   </App>,
-document.getElementById('root'));
+  document.getElementById('root'))

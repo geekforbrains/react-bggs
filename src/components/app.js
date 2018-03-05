@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { getHotGames, getGame, search } from '../libs/bgg'
 
 class App extends Component {
-  constructor() {
+  constructor () {
     super()
     this.state = {results: []}
     this.searchHandler = this.searchHandler.bind(this)
   }
 
-  updateGame(index, gameId) {
+  updateGame (index, gameId) {
     getGame(gameId, (game) => {
       if (!game) return
       this.setState((prevState) => {
@@ -19,7 +19,7 @@ class App extends Component {
     })
   }
 
-  renderResults(results) {
+  renderResults (results) {
     if (!results || results.length === 0) {
       this.setState({results: null})
     } else {
@@ -28,13 +28,13 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     getHotGames((results) => this.renderResults(results))
   }
 
-  searchHandler(e) {
+  searchHandler (e) {
     const keywords = e.target.value.trim()
-    clearTimeout(this.searchDelay) 
+    clearTimeout(this.searchDelay)
 
     if (keywords === '') {
       getHotGames((results) => this.renderResults(results))
@@ -46,10 +46,10 @@ class App extends Component {
     }
   }
 
-  render() {
-    return React.Children.map(this.props.children, child => 
+  render () {
+    return React.Children.map(this.props.children, child =>
       React.cloneElement(child, {
-        results: this.state.results, 
+        results: this.state.results,
         onChangeHandler: this.searchHandler}))
   }
 }

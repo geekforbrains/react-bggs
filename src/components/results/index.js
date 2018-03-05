@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { ResultItem, Message } from './view'
 
 class Results extends Component {
-  render() {
+  render () {
     const res = this.props.results
     if (res == null) return <Message text='No results :(' />
     if (res.length === 0) return <Message text='Consulting the Geek...' />
