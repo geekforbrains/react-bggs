@@ -5,11 +5,24 @@ function getGameUrl(id) {
   return `https://www.boardgamegeek.com/boardgame/${id}`
 }
 
-export function hot_games(cb) {
-  const cache = JSON.parse(sessionStorage.getItem('hot_games'))
+function getGameName(game) {
+  const name = game.name.constructor === Array ? game.name[0] : game.name
+  return name._attributes.value
+}
+
+function setGameDefaults(game) {
+  game.thumbnail = game.thumbnail || 'http://placehold.it/100x75'
+  game.desc = game.desc || 'Loading description...'
+  game.url = getGameUrl(game.id)
+  return game
+}
+
+export function getHotGames(cb) {
+  const cacheKey = 'hotGames'
+  const cache = JSON.parse(sessionStorage.getItem(cacheKey))
 
   if (cache) {
-    console.log('cache loaded: hot_games')
+    console.log('cache loaded:', cacheKey)
     return cb(cache)
   }
 
@@ -17,41 +30,22 @@ export function hot_games(cb) {
     .then((response) => {
       const data = convert.xml2js(response.data, {compact: true, spaces: 4})
       const items = data.items.item.slice(0, 10)
-      const formatted = items.map(i => ({
+      const results = items.map(i => (setGameDefaults({
         id: i._attributes.id,
-        name: i.name._attributes.value,
+        name: getGameName(i),
         thumbnail: i.thumbnail._attributes.value,
-        url: getGameUrl(i._attributes.id)
-      }))
-      sessionStorage.setItem('hot_games', JSON.stringify(formatted))
-      console.log('cache store: hot_games')
-      return cb(formatted)
+      })))
+      sessionStorage.setItem(cacheKey, JSON.stringify(results))
+      console.log('cache store:', cacheKey)
+      return cb(results)
     })
     .catch((error) => {
       console.log(error)
+      return cb(null)
     })
 }
 
-export function search(keywords, cb) {
-  console.log('searching:', keywords)
-  keywords = encodeURI(keywords)
-  axios.get(`https://www.boardgamegeek.com/xmlapi2/search?query=${keywords}&type=boardgame`)
-    .then((response) => {
-      const data = convert.xml2js(response.data, {compact: true, spaces: 4})
-      const results = data.items.item
-      const items = results.constructor === Array ? results : [results]
-      const formatted = items.slice(0, 10).map(i => ({
-        id: i._attributes.id,
-        name: i.name._attributes.value,
-      }))
-      return cb(formatted)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-}
-
-export function get_game(id, cb) {
+export function getGame(id, cb) {
   const cache = localStorage.getItem(id)
 
   if (cache) {
@@ -63,16 +57,37 @@ export function get_game(id, cb) {
     .then((response) => {
       const data = convert.xml2js(response.data, {compact: true, spaces: 4})
       const item = data.items.item
-      const formatted = {
+      console.log(item)
+      const game = setGameDefaults({
+        id: id,
+        name: getGameName(item),
         desc: item.description._text.split(' ').splice(0, 20).join(' ')+'...',
-        thumbnail: item.thumbnail._text,
-        url: getGameUrl(item._attributes.id)
-      }
-      localStorage.setItem(id, JSON.stringify(formatted))
+        thumbnail: item.thumbnail._text
+      })
+      localStorage.setItem(id, JSON.stringify(game))
       console.log('cache store: game', id)
-      return cb(formatted)
+      return cb(game)
     })
     .catch((error) => {
       console.log(error)
+      return cb(null)
+    })
+}
+
+export function search(keywords, cb) {
+  keywords = encodeURI(keywords)
+  axios.get(`https://www.boardgamegeek.com/xmlapi2/search?query=${keywords}&type=boardgame&nosubtypes=boardgameexpansion`)
+    .then((response) => {
+      const data = convert.xml2js(response.data, {compact: true, spaces: 4}).items.item
+      const items = data.constructor === Array ? data : [data]
+      const results = items.slice(0, 10).map(i => (setGameDefaults({
+        id: i._attributes.id,
+        name: getGameName(i)
+      })))
+      return cb(results)
+    })
+    .catch((error) => {
+      console.log(error)
+      return cb(null)
     })
 }
