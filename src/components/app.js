@@ -23,7 +23,6 @@ class App extends Component {
     if (!results || results.length === 0) {
       this.setState({results: null})
     } else {
-      console.log(results)
       this.setState(() => ({results: results}))
       results.map((v, k) => this.updateGame(k, v.id))
     }

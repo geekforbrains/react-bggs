@@ -57,7 +57,6 @@ export function getGame(id, cb) {
     .then((response) => {
       const data = convert.xml2js(response.data, {compact: true, spaces: 4})
       const item = data.items.item
-      console.log(item)
       const game = setGameDefaults({
         id: id,
         name: getGameName(item),
